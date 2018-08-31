@@ -1,4 +1,7 @@
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+
+import time
 import unittest
 
 class NewVisitorTest(unittest.TestCase):
@@ -16,19 +19,35 @@ class NewVisitorTest(unittest.TestCase):
 
         # She notices the page title and header mention to-do lists
         self.assertIn('To-Do', self.browser.title)
+        header_text = self.browser.find_element_by_tag_name('h1').text
+        self.assertIn('To-Do', header_text)
+
         self.fail('Finish the test!')
 
         # She is able to enter a to-do item
 
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        
+        self.assertEqual(inputbox.get_attribute('placeholder'),
+            'Enter a to-do item'
+            )
+
         # She types "Brainstorm/Setup backlog initial creation session" into a text box
-
+        inputbox.send_keys('Brainstorm/Setup initial backlog creation session')
         # When She hits enter, the page updates, and now the page lists
-
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
         # "1: Brainstorm backlog" as an item in a to-do list
-
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertTrue(
+            any(row.text == '1: Brainstorm/Setup intitial backlog creation session' for row in rows)
+        )
         # There is still a text box where she is able to add another item
 
         # She enters "Schedule backlog creation session"
+
+        self.fail('Finish the test!')
 
         # The page updates and now shows both items on her list
 
