@@ -12,7 +12,7 @@ class NewVisitorTest(unittest.TestCase):
     def tearDown(self):
         self.browser.quit()
 
-    def test_can_start_a_list_and_retrievew_it_later(self):
+    def test_can_start_a_list_and_retrieve_it_later(self):
         # Edith has heard about a cool new online to-do app
         # She goes to check out the home page
         self.browser.get('http://localhost:8000')
@@ -22,7 +22,7 @@ class NewVisitorTest(unittest.TestCase):
         header_text = self.browser.find_element_by_tag_name('h1').text
         self.assertIn('To-Do', header_text)
 
-        self.fail('Finish the test!')
+        #self.fail('Finish the test!')
 
         # She is able to enter a to-do item
 
@@ -41,7 +41,8 @@ class NewVisitorTest(unittest.TestCase):
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
         self.assertTrue(
-            any(row.text == '1: Brainstorm/Setup intitial backlog creation session' for row in rows)
+            any(row.text == '1: Brainstorm/Setup intitial backlog creation session' for row in rows), 
+            "New to-do item did not appear in table"
         )
         # There is still a text box where she is able to add another item
 
