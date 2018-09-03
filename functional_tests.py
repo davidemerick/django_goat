@@ -40,21 +40,28 @@ class NewVisitorTest(unittest.TestCase):
         # "1: Brainstorm backlog" as an item in a to-do list
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(
-            any(row.text == '1: Brainstorm/Setup intitial backlog creation session' for row in rows), 
-            "New to-do item did not appear in table"
-        )
+        self.assertIn('1: Brainstorm/Setup initial backlog creation session', [row.text for row in rows])
+
         # There is still a text box where she is able to add another item
-
         # She enters "Schedule backlog creation session"
-
-        self.fail('Finish the test!')
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Schedule backlog creation session')
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
 
         # The page updates and now shows both items on her list
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn('1: Brainstorm/Setup initial backlog creation session',
+        [row.text for row in rows])
+        self.assertIn(
+            '2: Schedule backlog creation session', [row.text for row in rows]
+        )
 
         # Edith wonders whether the site will remember her list
         # She sees that the site has generated a unique URL for her
         # There is some explanatory text to that effect.
+        self.fail('Finish the test!')
 
         # She visits the provided URL - her to-do list is still there.
 
