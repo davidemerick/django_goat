@@ -29,7 +29,7 @@ class NewVisitorTest(LiveServerTestCase):
                     raise e
                 time.sleep(0.5)
 
-    def test_can_start_a_list_and_retrieve_it_later(self):
+    def test_can_start_a_list_for_one_user(self):
         # Edith has heard about a cool new online to-do app
         # She goes to check out the home page
         self.browser.get(self.live_server_url)
@@ -67,12 +67,48 @@ class NewVisitorTest(LiveServerTestCase):
         # The page updates and now shows both items on her list
         self.wait_for_row_in_list_table('1: Brainstorm/Setup initial backlog creation session')
         self.wait_for_row_in_list_table('2: Schedule backlog creation session')
-
-        # Edith wonders whether the site will remember her list
-        # She sees that the site has generated a unique URL for her
-        # There is some explanatory text to that effect.
-        self.fail('Finish the test!')
-
-        # She visits the provided URL - her to-do list is still there.
-
+        
         # Edith is satisfied and moves on with her morning.
+
+    def test_multiple_users_can_start_lists_at_different_urls(self):
+        #Edith starts a new to-do list
+        self.browser.get(self.live_server_url)
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Brainstorm/Setup initial backlog creation session')
+        inputbox.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table('1: Brainstorm/Setup initial backlog creation session')
+
+        #She notices that her list has a unique URL
+        edith_list_url = self.browser.current_url
+        self.assertRegex(edith_list_url, '/lists/.+')
+
+        ## A new user, Francis, visits the site
+        ## We use a new browser session to make sure that no information of Edith's comes through
+        self.browser.quit()
+        self.browser = webdriver.Firefox()
+
+        # Francis visits the home page. There is no sign of Edith's list
+        self.browser.get(self.live_server_url)
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('Brainstorm/Setup initial backlog creation session', page_text)
+        self.assertNotIn('Schedule backlog creation', page_text)
+
+        # Francis starts a new list by entering a new item
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Buy eggs')
+        inputbox.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table('1: Buy eggs')
+
+        # Francis gets his own unique URL
+        francis_list_url = self.browser.current_url
+        self.assertRegex(francis_list_url, '/lists/.+')
+        self.assertNotEqual(francis_lists_url, edith_list_url)
+
+        # There is still no trace of Edith's list and Francis list is displayed
+        page_text = self.browser.find_element_by_tag_name('body').text
+        self.assertNotIn('Brainstorm/Setup initial backlog creation session', page_text)
+        self.assertIn('Buy eggs', page_text)
+
+        # Satisfied, Francis leaves
+
+
