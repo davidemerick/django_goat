@@ -53,7 +53,6 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys('Brainstorm/Setup initial backlog creation session')
         # When She hits enter, the page updates, and now the page lists
         inputbox.send_keys(Keys.ENTER)
-        time.sleep(1)
         # "1: Brainstorm backlog" as an item in a to-do list
         self.wait_for_row_in_list_table('1: Brainstorm/Setup initial backlog creation session')
 
@@ -62,7 +61,6 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox = self.browser.find_element_by_id('id_new_item')
         inputbox.send_keys('Schedule backlog creation session')
         inputbox.send_keys(Keys.ENTER)
-        time.sleep(1)
 
         # The page updates and now shows both items on her list
         self.wait_for_row_in_list_table('1: Brainstorm/Setup initial backlog creation session')
