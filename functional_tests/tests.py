@@ -100,7 +100,7 @@ class NewVisitorTest(LiveServerTestCase):
         # Francis gets his own unique URL
         francis_list_url = self.browser.current_url
         self.assertRegex(francis_list_url, '/lists/.+')
-        self.assertNotEqual(francis_lists_url, edith_list_url)
+        self.assertNotEqual(francis_list_url, edith_list_url)
 
         # There is still no trace of Edith's list and Francis list is displayed
         page_text = self.browser.find_element_by_tag_name('body').text
